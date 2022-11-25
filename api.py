@@ -35,3 +35,4 @@ for ubicacion in lista_comunas:
 print("Comunas: ",lista_comunas)
 print("Climas: ", clima)
 print("Pronósticos: ", pronosticos)
+print(lista_comunas)
