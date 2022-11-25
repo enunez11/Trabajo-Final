@@ -4,35 +4,24 @@ import pandas as pd
 # Se crea lista de horarios de funcionamiento
 # esta información puede venir desde otro Excel, CSV o API
 
-climas = [
-  "28.21",
-  "28",
-  "29.04",
-  "27.7",
-  "26.78",
-  "28.87",
-]
 
-pronostico = [
-  "cielo claro"
-]
 
 
 def asigna_clima(data):
   comuna=data["Comuna"]
 
   if(comuna=="ÑUÑOA"):
-    return climas[24.5]
+    return clima[24.5]
   elif(comuna=="LA FLORIDA"):
-    return climas[28]
+    return clima[28]
   elif(comuna=="RENCA"):
-    return climas[29.04]
+    return clima[29.04]
   elif(comuna=="LAS CONDES"):
-    return climas[23.65]
+    return clima[23.65]
   elif(comuna=="PROVIDENCIA"):
-    return climas[26.78]
+    return clima[26.78]
   elif(comuna=="HUECHURABA"):
-    return climas[28.87]
+    return clima[28.87]
 
 
 @st.cache
