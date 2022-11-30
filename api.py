@@ -1,8 +1,11 @@
 import requests
 import json
 import os
+import pandas as pd
+import streamlit as st
 from urllib.parse import quote
 from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -36,3 +39,4 @@ print("Comunas: ",lista_comunas)
 print("Climas: ", clima)
 print("Pronósticos: ", pronosticos)
 print(lista_comunas)
+
