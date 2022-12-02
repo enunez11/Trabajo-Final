@@ -5,47 +5,47 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Se importan funcionalidades desde librería propia
-from utils import geo_data
+from utils import atrac_data
 
 # Obtener datos desde cache
-data_puntos = geo_data()
+data_puntos = atrac_data()
 
-# Generar listado de horarios ordenados
-horarios_puntos = data_puntos["Horario"].sort_values().unique()
+# Generar listado de ATRACTIVOS ordenados
+atractivos_puntos = data_puntos["NOMBRE"].sort_values().unique()
 
-# Generar listado de comunas ordenadas
-comunas_puntos = data_puntos["Comuna"].sort_values().unique()
+# Generar listado de regiones ordenadas
+region_puntos = data_puntos["REGION"].sort_values().unique()
 
 with st.sidebar:
   st.write("##### Filtros de Información")
   st.write("---")
 
-  # Multiselector de comunas
-  comuna_sel = st.multiselect(
-    label="Comunas en Funcionamiento",
-    options=comunas_puntos,
+  # Multiselector de regiones
+  region_sel = st.multiselect(
+    label="Regiones con atractivos turísticos",
+    options=region_puntos,
     default=[]
   )
   # Se establece la lista completa en caso de no seleccionar ninguna
-  if not comuna_sel:
-    comuna_sel = comunas_puntos.tolist()
+  if not region_sel:
+    region_sel = region_puntos.tolist()
 
-  # Multiselector de horarios
-  hora_sel = st.multiselect(
-    label="Horario de Funcionamiento",
-    options=horarios_puntos,
-    default=horarios_puntos
+  # Multiselector de atractivos turisticos
+  atractivo_sel = st.multiselect(
+    label="Atractivos turisticos",
+    options=atractivos_puntos,
+    default=atractivos_puntos
   )
   # Se establece la lista completa en caso de no seleccionar ninguna
-  if not hora_sel:
-    hora_sel = horarios_puntos.tolist()
+  if not atractivo_sel:
+    atractivo_sel = atractivos_puntos.tolist()
 
 
 col_bar, col_pie, col_line = st.columns(3, gap="small")
 
-group_comuna = data_puntos.groupby(["Horario"]).size()
+group_region = data_puntos.groupby(["TIPO"]).size()
 # Se ordenan de mayor a menor, gracias al uso del parámetros "ascending=False"
-group_comuna.sort_values(axis="index", ascending=False, inplace=True)
+group_region.sort_values(axis="index", ascending=False, inplace=True)
 
 def formato_porciento(dato: float):
   return f"{round(dato, ndigits=2)}%"
@@ -54,10 +54,10 @@ def formato_porciento(dato: float):
 with col_bar:
   bar = plt.figure()
   group_comuna.plot.bar(
-    title="Cantidad de Puntos de Carga por Horario",
-    label="Total de Puntos",
-    xlabel="Horarios",
-    ylabel="Puntos de Carga",
+    title="Cantidad de atractivos turísticos por tipo",
+    label="Total de atractivos",
+    xlabel="Tipo",
+    ylabel="Atractivos turísticos",
     color="lightblue",
     grid=True,
   ).plot()
@@ -67,7 +67,7 @@ with col_pie:
   pie = plt.figure()
   group_comuna.plot.pie(
     y="index",
-    title="Cantidad de Puntos de Carga por Horario",
+    title="Cantidad de atractivos turísticos por tipo",
     legend=None,
     autopct=formato_porciento
   ).plot()
@@ -76,32 +76,32 @@ with col_pie:
 with col_line:
   line = plt.figure()
   group_comuna.plot.line(
-    title="Cantidad de Puntos de Carga por Horario",
-    label="Total de Puntos",
-    xlabel="Horarios",
-    ylabel="Puntos de Carga",
+    title="Cantidad de atractivos turísticos por tipo",
+    label="Total de atractivos",
+    xlabel="Tipo",
+    ylabel="Atractivos turísticos",
     color="lightblue",
     grid=True
   ).plot()
   st.pyplot(line)
 
 # Aplicar Filtros
-geo_data = data_puntos.query(" Horario==@hora_sel and Comuna==@comuna_sel ")
+atrac_data = data_puntos.query("NOMBRE==@atractivo_sel and REGION==@region_sel ")
 
-if geo_data.empty:
+if atrac_data.empty:
   # Advertir al usuario que no hay datos para los filtros
   st.warning("#### No hay registros para los filtros usados!!!")
 else:
   # Desplegar Mapa
   # Obtener el punto promedio entre todas las georeferencias
-  avg_lat = np.median(geo_data["LATITUD"])
-  avg_lng = np.median(geo_data["LONGITUD"])
+  avg_x = np.median(atrac_data["PUNTO_X"])
+  avg_y = np.median(atrac_data["PUNTO_Y"])
 
   puntos_mapa = pdk.Deck(
       map_style=None,
       initial_view_state=pdk.ViewState(
-          latitude=avg_lat,
-          longitude=avg_lng,
+          latitude=avg_x,
+          longitude=avg_y,
           zoom=10,
           min_zoom=10,
           max_zoom=15,
@@ -110,21 +110,20 @@ else:
       layers=[
         pdk.Layer(
           "HeatmapLayer",
-          data=geo_data,
+          data=atrac_data,
           pickable=True,
           auto_highlight=True,
-          get_position='[LONGITUD, LATITUD]',
+          get_position='[PUNTO_X, PUNTO_Y]',
           opacity=0.6,
-          get_weight="Horario == '10:00 - 14:00' ? 255 : 10"
         )      
       ],
       tooltip={
-        "html": "<b>Negocio: </b> {Negocio} <br /> "
-                "<b>Dirección: </b> {Dirección} <br /> "
-                "<b>Comuna: </b> {Comuna} <br /> "
-                "<b>Horario: </b> {Horario} <br /> "
-                "<b>Código: </b> {CODIGO} <br /> "
-                "<b>Georeferencia (Lat, Lng): </b>[{LATITUD}, {LONGITUD}] <br /> ",
+        "html": "<b>Nombre: </b> {NOMBRE} <br /> "
+                "<b>Dirección: </b> {DIRECCION} <br /> "
+                "<b>Comuna: </b> {COMUNA} <br /> "
+                "<b>Región: </b> {REGION} <br /> "
+                "<b>Tipo: </b> {TIPO} <br /> "
+                "<b>Georeferencia (Lat, Lng): </b>[{PUNTO_X}, {PUNTO_Y}] <br /> ",
         "style": {
           "backgroundColor": "steelblue",
           "color": "white"

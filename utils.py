@@ -45,7 +45,7 @@ def atrac_data():
 atrac=pd.read_excel("tabla_atrac_utm.xlsx", header=0)
 
   # Obtener columnas de datos
-data_turist = atrac[ ["FID","JERARQUIA", "NOMBRE", "REGION", "DIRECCION", "COMUNA", "POINT_x", "POINT_y"]]
+data_turist = atrac[ ["FID","JERARQUIA", "TIPO", "NOMBRE", "REGION", "DIRECCION", "COMUNA", "POINT_x", "POINT_y"]]
 
   # Corregir los nombres de las columnas
 atrac_data_turist = data_turist.rename(columns={

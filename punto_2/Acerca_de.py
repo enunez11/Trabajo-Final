@@ -6,10 +6,10 @@ st.write("## Visualizaciones de Datos Geográficos en Internet")
 components.html("""
 <div style="background: white;border-radius: 5px;padding: 10px 25px;">
   <h3>
-    Creado para el curso de FAU - 2022
+    Creado para el trabajo final de curso Visalizaciones de Datos Geográficos en Internet - 2022
   </h3>
   <p>
-    Creado por: <b>Cristian Acuña</b>
+    Creado por: <b>Emmanuel Núñez, Dominique Cabrera, Dennis Lago</b>
   <p>
 </div>
 """,width=620, height=130)

@@ -14,10 +14,5 @@ st.sidebar.write("## Challenge de Visualizaciones")
 st.write("### Atractivos turísticos de Chile")
 
 components.html("""
-  <iframe width="100%" height="520" 
-    src="https://www.youtube-nocookie.com/embed/gJSPFlH7UgE?modestbranding=1&controls=0&auto=1"
-    title="Visita de Metro de Santiago" frameborder="0" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-    allowfullscreen>
-  </iframe>
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/ZVe80q5gt1Q" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 """, height=520)
