@@ -53,7 +53,7 @@ def formato_porciento(dato: float):
 
 with col_bar:
   bar = plt.figure()
-  group_comuna.plot.bar(
+  group_region.plot.bar(
     title="Cantidad de atractivos turísticos por tipo",
     label="Total de atractivos",
     xlabel="Tipo",
@@ -65,7 +65,7 @@ with col_bar:
 
 with col_pie:
   pie = plt.figure()
-  group_comuna.plot.pie(
+  group_region.plot.pie(
     y="index",
     title="Cantidad de atractivos turísticos por tipo",
     legend=None,
@@ -75,7 +75,7 @@ with col_pie:
 
 with col_line:
   line = plt.figure()
-  group_comuna.plot.line(
+  group_region.plot.line(
     title="Cantidad de atractivos turísticos por tipo",
     label="Total de atractivos",
     xlabel="Tipo",
