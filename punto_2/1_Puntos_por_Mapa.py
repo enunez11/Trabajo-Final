@@ -4,60 +4,60 @@ import pydeck as pdk
 import numpy as np
 
 # Se importan funcionalidades desde librería propia
-from utils import geo_data
+from utils import atrac_data
 
 # Obtener datos desde cache
-data_puntos = geo_data()
+data_puntos = atrac_data()
 
 # Generar listado de horarios ordenados
-horarios_puntos = data_puntos["Horario"].sort_values().unique()
+atractivos_puntos = data_puntos["NOMBRE"].sort_values().unique()
 
 # Generar listado de comunas ordenadas
-comunas_puntos = data_puntos["Comuna"].sort_values().unique()
+region_puntos = data_puntos["REGION"].sort_values().unique()
 
 with st.sidebar:
   st.write("##### Filtros de Información")
   st.write("---")
 
   # Multiselector de comunas
-  comuna_sel = st.multiselect(
-    label="Comunas en Funcionamiento",
-    options=comunas_puntos,
+  region_sel = st.multiselect(
+    label="Regiones con Atractivos",
+    options=region_puntos,
     default=[]
   )
   # Se establece la lista completa en caso de no seleccionar ninguna
-  if not comuna_sel:
-    comuna_sel = comunas_puntos.tolist()
+  if not region_sel:
+    region_sel = region_puntos.tolist()
 
   # Multiselector de horarios
-  hora_sel = st.multiselect(
-    label="Horario de Funcionamiento",
-    options=horarios_puntos,
-    default=horarios_puntos
+  atractivo_sel = st.multiselect(
+    label="Atractivos Turísticos",
+    options=atractivos_puntos,
+    default=atractivos_puntos
   )
   # Se establece la lista completa en caso de no seleccionar ninguna
-  if not hora_sel:
-    hora_sel = horarios_puntos.tolist()
+  if not atractivo_sel:
+    atractivo_sel = atractivos_puntos.tolist()
 
 
 
 # Aplicar Filtros
-geo_data = data_puntos.query(" Horario==@hora_sel and Comuna==@comuna_sel")
+atrac_data = data_puntos.query(" Atractivos==@atractivo_sel and Region==@region_sel")
 
-if geo_data.empty:
+if atrac_data.empty:
   # Advertir al usuario que no hay datos para los filtros
   st.warning("#### No hay registros para los filtros usados!!!")
 else:
   # Desplegar Mapa
   # Obtener el punto promedio entre todas las georeferencias
-  avg_lat = np.median(geo_data["LATITUD"])
-  avg_lng = np.median(geo_data["LONGITUD"])
+  avg_x = np.median(atrac_data["PUNTO_X"])
+  avg_y = np.median(atrac_data["PUNTO_Y"])
 
   puntos_mapa = pdk.Deck(
       map_style=None,
       initial_view_state=pdk.ViewState(
-          latitude=avg_lat,
-          longitude=avg_lng,
+          latitude=avg_x,
+          longitude=avg_y,
           zoom=10,
           min_zoom=10,
           max_zoom=15,
@@ -66,24 +66,24 @@ else:
       layers=[
         pdk.Layer(
           "ScatterplotLayer",
-          data=geo_data,
+          data=atrac_data,
           pickable=True,
           auto_highlight=True,
-          get_position='[LONGITUD, LATITUD]',
+          get_position='[PUNTO_X, PUNTO_Y]',
           filled=True,
           opacity=0.6,
           radius_scale=10,
           radius_min_pixels=3,
-          get_fill_color=["Horario == '08:30 - 18:30' ? 255 : 10", "Horario == '08:30 - 18:30' ? 0 : 200", 90, 200]
+          get_fill_color=["NOMBRE", 90, 200]
         )      
       ],
       tooltip={
-        "html": "<b>Negocio: </b> {Negocio} <br /> "
-                "<b>Dirección: </b> {Dirección} <br /> "
-                "<b>Comuna: </b> {Comuna} <br /> "
-                "<b>Horario: </b> {Horario} <br /> "
-                "<b>Código: </b> {CODIGO} <br /> "
-                "<b>Georeferencia (Lat, Lng): </b>[{LATITUD}, {LONGITUD}] <br /> ",
+        "html": "<b>Nombre: </b> {NOMBRE} <br /> "
+                "<b>Dirección: </b> {DIRECCION} <br /> "
+                "<b>Comuna: </b> {COMUNA} <br /> "
+                "<b>Región: </b> {REGION} <br /> "
+                "<b>Tipo: </b> {TIPO} <br /> "
+                "<b>Georeferencia (Lat, Lng): </b>[{PUNTO_X}, {PUNTO_Y}] <br /> ",
         "style": {
           "backgroundColor": "steelblue",
           "color": "white"
