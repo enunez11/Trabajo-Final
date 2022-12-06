@@ -2,26 +2,27 @@ import streamlit as st
 
 import pydeck as pdk
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Se importan funcionalidades desde librería propia
-from utils import atrac_data
+from utils import tur_data
 
 # Obtener datos desde cache
-data_puntos = atrac_data()
+data_puntos = tur_data()
 
-# Generar listado de horarios ordenados
+# Generar listado de ATRACTIVOS ordenados
 atractivos_puntos = data_puntos["NOMBRE"].sort_values().unique()
 
-# Generar listado de comunas ordenadas
+# Generar listado de regiones ordenadas
 region_puntos = data_puntos["REGION"].sort_values().unique()
 
 with st.sidebar:
   st.write("##### Filtros de Información")
   st.write("---")
 
-  # Multiselector de comunas
+  # Multiselector de regiones
   region_sel = st.multiselect(
-    label="Regiones con Atractivos",
+    label="Regiones con atractivos turísticos",
     options=region_puntos,
     default=[]
   )
@@ -29,9 +30,9 @@ with st.sidebar:
   if not region_sel:
     region_sel = region_puntos.tolist()
 
-  # Multiselector de horarios
+  # Multiselector de atractivos turisticos
   atractivo_sel = st.multiselect(
-    label="Atractivos Turísticos",
+    label="Atractivos turisticos",
     options=atractivos_puntos,
     default=atractivos_puntos
   )
@@ -40,9 +41,52 @@ with st.sidebar:
     atractivo_sel = atractivos_puntos.tolist()
 
 
+col_bar, col_pie, col_line = st.columns(3, gap="small")
+
+group_region = data_puntos.groupby(["TIPO"]).size()
+# Se ordenan de mayor a menor, gracias al uso del parámetros "ascending=False"
+group_region.sort_values(axis="index", ascending=False, inplace=True)
+
+def formato_porciento(dato: float):
+  return f"{round(dato, ndigits=2)}%"
+
+
+with col_bar:
+  bar = plt.figure()
+  group_region.plot.bar(
+    title="Cantidad de atractivos turísticos por tipo",
+    label="Total de atractivos",
+    xlabel="Tipo",
+    ylabel="Atractivos turísticos",
+    color="lightblue",
+    grid=True,
+  ).plot()
+  st.pyplot(bar)
+
+with col_pie:
+  pie = plt.figure()
+  group_region.plot.pie(
+    y="index",
+    title="Cantidad de atractivos turísticos por tipo",
+    legend=None,
+    autopct=formato_porciento
+  ).plot()
+  st.pyplot(pie)
+
+with col_line:
+  line = plt.figure()
+  group_region.plot.line(
+    title="Cantidad de atractivos turísticos por tipo",
+    label="Total de atractivos",
+    xlabel="Tipo",
+    ylabel="Atractivos turísticos",
+    color="lightblue",
+    grid=True
+  ).plot()
+  st.pyplot(line)
 
 # Aplicar Filtros
-atrac_data = data_puntos.query(" Atractivos==@atractivo_sel and Region==@region_sel")
+atrac_data = data_puntos.query("NOMBRE==@atractivo_sel and REGION==@region_sel ")
 
 if atrac_data.empty:
   # Advertir al usuario que no hay datos para los filtros
@@ -65,16 +109,12 @@ else:
       ),
       layers=[
         pdk.Layer(
-          "ScatterplotLayer",
+          "HeatmapLayer",
           data=atrac_data,
           pickable=True,
           auto_highlight=True,
           get_position='[PUNTO_X, PUNTO_Y]',
-          filled=True,
           opacity=0.6,
-          radius_scale=10,
-          radius_min_pixels=3,
-          get_fill_color=["NOMBRE", 90, 200]
         )      
       ],
       tooltip={
