@@ -100,38 +100,22 @@ def tur_data():
  tur_data_turist["CLIMA"] = tur_data_turist.apply(asigna_clima, axis=1)
  tur_data_turist["PRONOSTICO"] = tur_data_turist.apply(asigna_pronostico, axis=1)
 
- print(tur_data_turist)
+ return(tur_data_turist)
 
 
- ruta_mi_bd = os.path.abspath("./cargas.db")
- mi_bd = f"sqlite:///{ruta_mi_bd}"
-# En caso de ser una base de datos PostgreSQL, el formato sería:
-# mi_bd = f"postgres://usuario:clave@servidor/base_de_datos"
-
-# Conectar a la BD
-# El parámetro echo=True, muestra en consola lo que genera SQLAlchemy
-# El parámetro future=True, activa las funcionalidades de la versión 2.x
- engine = create_engine(mi_bd, echo=True, future=True)
-
-
-
-
-#lectura del dataframe
- turist = pd.DataFrame(tur_data_turist)
-
- # Grabar DataFrame en BD
- turist.to_sql(con=engine, name="AtractivosTuristos", if_exists="replace", index_label="FID")
-
-# Crear la tabla en BD
- Base.metadata.create_all(engine)
-
-
+ 
 
 ruta_mi_bd = os.path.abspath("./cargas.db")
 mi_bd = f"sqlite:///{ruta_mi_bd}"
 #Conectar a la BD
 
 engine = create_engine(mi_bd, echo=True, future=True)
+
+#lectura del dataframe
+turist = pd.DataFrame(tur_data)
+
+# Grabar DataFrame en BD
+turist.to_sql(con=engine, name="AtractivosTuristos", if_exists="replace", index_label="FID")
 
  # Crear sesión a BD
 session = Session(engine)
@@ -150,7 +134,7 @@ class AtracTurist(Base):
     REGION = Column(String(100))
     DIRECCION = Column(String(100))
     COMUNA = Column(String(100))
-    TEMPERATURA = Column(Integer)
+    CLIMA = Column(Integer)
     PRONOSTICO = Column(Integer)
     PUNTO_X = Column(Float)
     PUNTO_Y = Column(Float)
@@ -160,7 +144,6 @@ class AtracTurist(Base):
       + f"REGION={self.REGION}, DIRECCION={self.DIRECCION}, COMUNA={self.COMUNA}," \
       + f"TEMPERATURA={self.TEMPERATURA}, PRONOSTICO={self.PRONOSTICO}, PUNTO_X={self.PUNTO_X}, PUNTO_Y={self.PUNTO_Y}" \
       + ")"
-
 
 
 
