@@ -47,7 +47,7 @@ print(lista_comunas)
 
 
 def asigna_clima(data):
-  comuna=data["Comunas"]
+  comuna=data["COMUNA"]
 
   if(comuna=="ÑUÑOA"):
     return clima
@@ -63,7 +63,7 @@ def asigna_clima(data):
     return clima
 
 def asigna_pronosticos(data):
-  comuna=data["Comunas"]
+  comuna=data["COMUNA"]
 
   if(comuna=="ÑUÑOA"):
     return pronosticos
@@ -94,6 +94,9 @@ def tur_data():
   })
 
  tur_data_turist["FECHA DE PROCESO"] = "18-11-2022"
+
+ # Limpiar los datos, Eliminando los registros sin Comuna
+ tur_data_turist.dropna(subset=["COMUNA"], inplace=True)
 
   # Asignar valores de horarios a la columna de Horario,
   # para esto se aplica una lógica usando todas las columnas de cada registro
@@ -143,7 +146,7 @@ class AtracTurist(Base):
     def __repr__(self) -> str:
       return f" AtractTurist(FID={self.FID}, ESCALA={self.ESCALA}, NOMBRE={self.NOMBRE}, " \
       + f"REGION={self.REGION}, DIRECCION={self.DIRECCION}, COMUNA={self.COMUNA}," \
-      + f"TEMPERATURA={self.TEMPERATURA}, PRONOSTICO={self.PRONOSTICO}, PUNTO_X={self.PUNTO_X}, PUNTO_Y={self.PUNTO_Y}" \
+      + f"TEMPERATURA={self.CLIMA}, PRONOSTICO={self.PRONOSTICO}, PUNTO_X={self.PUNTO_X}, PUNTO_Y={self.PUNTO_Y}" \
       + ")"
 
 
