@@ -47,7 +47,7 @@ print(lista_comunas)
 
 
 def asigna_clima(data):
-  comuna=data["Comuna"]
+  comuna=data["Comunas"]
 
   if(comuna=="ÑUÑOA"):
     return clima
@@ -62,8 +62,8 @@ def asigna_clima(data):
   elif(comuna=="HUECHURABA"):
     return clima
 
-def asigna_pronostico(data):
-  comuna=data["Comuna"]
+def asigna_pronosticos(data):
+  comuna=data["Comunas"]
 
   if(comuna=="ÑUÑOA"):
     return pronosticos
@@ -98,9 +98,10 @@ def tur_data():
   # Asignar valores de horarios a la columna de Horario,
   # para esto se aplica una lógica usando todas las columnas de cada registro
  tur_data_turist["CLIMA"] = tur_data_turist.apply(asigna_clima, axis=1)
- tur_data_turist["PRONOSTICO"] = tur_data_turist.apply(asigna_pronostico, axis=1)
-
+ tur_data_turist["PRONOSTICO"] = tur_data_turist.apply(asigna_pronosticos, axis=1)
+ print(tur_data_turist)
  return(tur_data_turist)
+
 
 
  
