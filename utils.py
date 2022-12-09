@@ -50,33 +50,33 @@ def asigna_clima(data):
   comuna=data["COMUNA"]
 
   if(comuna=="ÑUÑOA"):
-    return clima
+    return clima[0]
   elif(comuna=="LA FLORIDA"):
-    return clima
+    return clima[0]
   elif(comuna=="RENCA"):
-    return clima
+    return clima[0]
   elif(comuna=="LAS CONDES"):
-    return clima
+    return clima[0]
   elif(comuna=="PROVIDENCIA"):
-    return clima
+    return clima[0]
   elif(comuna=="HUECHURABA"):
-    return clima
+    return clima[0]
 
 def asigna_pronosticos(data):
   comuna=data["COMUNA"]
 
   if(comuna=="ÑUÑOA"):
-    return pronosticos
+    return pronosticos[0]
   elif(comuna=="LA FLORIDA"):
-    return pronosticos
+    return pronosticos[0]
   elif(comuna=="RENCA"):
-    return pronosticos
+    return pronosticos[0]
   elif(comuna=="LAS CONDES"):
-    return pronosticos
+    return pronosticos[0]
   elif(comuna=="PROVIDENCIA"):
-    return pronosticos
+    return pronosticos[0]
   elif(comuna=="HUECHURABA"):
-    return pronosticos
+    return pronosticos[0]
 
 @st.cache
 def tur_data():
@@ -116,7 +116,7 @@ mi_bd = f"sqlite:///{ruta_mi_bd}"
 engine = create_engine(mi_bd, echo=True, future=True)
 
 #lectura del dataframe
-turist = pd.DataFrame(tur_data)
+turist = pd.DataFrame([tur_data])
 
 # Grabar DataFrame en BD
 turist.to_sql(con=engine, name="AtractivosTuristos", if_exists="replace", index_label="FID")
