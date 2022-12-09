@@ -98,7 +98,7 @@ def tur_data():
  # Limpiar los datos, Eliminando los registros sin Comuna
  tur_data_turist.dropna(subset=["COMUNA"], inplace=True)
 
-  # Asignar valores de horarios a la columna de Horario,
+  # Asignar valores de clima y pronosticos a la columna columna correspondiente,
   # para esto se aplica una lógica usando todas las columnas de cada registro
  tur_data_turist["CLIMA"] = tur_data_turist.apply(asigna_clima, axis=1)
  tur_data_turist["PRONOSTICO"] = tur_data_turist.apply(asigna_pronosticos, axis=1)
